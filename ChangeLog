@@ -1,0 +1,434 @@
+2010-04-18	me <brouits@free.fr>
+	Files:	*.c *.h
+	Msg:	successful build/run with dev-cpp under win32
+
+2009-12-10	David Griesemer <david@datavoiceint.com>
+	Files:	session.c
+	Msg:	- use closesocket() on WIN32, this avoids a memory leak.
+
+2009-10-15	me <brouits@free.fr>
+	Files:	libspopc.[ch], mutex;[ch], session.c, Makefile
+	Msg:	- now allow to use pOSIX mutexes (for openVMS) if USE_PMUTEX
+		- now version 0.12 and semaphore+ssl enabled in default Makefile
+
+2009-08-29	me <brouits@free.fr>
+	Files:	queries.c (fix), examples/butcher.c (fix)
+	Msg:	- fixed bug of invalid write of latest '\0'.
+		- fixed offset in strstrup(): use now heap for upstring and upword.
+		- now version 0.11
+
+2009-03-30	me <brouits@free.fr>
+	Files:	queries.c (fix), session.c (typo)
+	Msg:	fixed a bug in pop3_retr: possible overrun on error.
+
+2009-03-20	Angus <angus@uducat.com>
+	Files:	Makefile, objets.c, session.c
+	Msg:	do not strip static version libspopc.a + add some err checks
+
+2009-03-19	Angus <angus@uducat.com>, me <brouits@free.fr>
+	Files:	libspopc.h, format.c, ...
+	Msg:	some default init and checks, after Angus valgrind report.
+
+2009-02-04	me <brouits@free.fr>
+	Files:	session.c
+	Msg:	moved socket_prepare outside USE_SSL (build issue)
+
+2009-01-31	me <brouits@free.fr>
+	Files:	*.c eamples/*.c Makefile
+	Msg:	reindent properly (noexpandtab) and set version to 0.10
+
+2009-01-31	me <brouits@free.fr>
+	Files:	doc/manual.txt README
+	Msg:	talk about session->last and session->num. talk about timeout.
+
+2009-01-31	me <brouits@free.fr>
+	Files:	parsing.c queries.c libspopc.h session.c objects.c examples/*
+	Msg:	removed old unused select() stuff. restored timeout read/write
+		with socket_prepare(). do SO_RCVTIMEO and SO_SNDTIMEO exist
+		everywhere ?  removed auto-destroy on error. cleaned code.
+		added session->num and session->sync and popsync()
+
+2009-01-27	me <brouits@free.fr>
+	Files:	doc/manual.txt
+	Msg:	update again manual: s/stat2last/stat2num/.
+
+2009-01-27	me <brouits@free.fr>
+	Files:	doc/manual.txt
+	Msg:	update manual aout libspopc_init() and libspopc_clean(), and about OpenVMS.
+
+2009-01-27	me <brouits@free.fr>
+	Files:	Makefile
+	Msg:	do not enble re-entrancy by default, wait for 1.0
+
+2009-01-27	Francesco Gennai <francesco.gennai@isti.cnr.it>
+	Files:	vms/* (+)
+	Msg:	OpenVMS build script (build_libspopc.com) and documentation.
+
+2009-01-26	me <brouits@free.fr>
+	Files:	objects.c
+	Msg:	bugfix in poplast() (did not return the last id!) thanks to Francesco Gennai.
+
+2009-01-24	me <brouits@free.fr>
+	Files:	*.c COPYING.LIB
+	Msg:	updated license (still LGPL, just v2.1) and copyright info.
+
+2009-01-05	me <brouits@free.fr>
+	Files:	format.c
+	Msg:	fix in uidl2array to be compatible with popchkmsg().
+
+2009-01-05	Francesco Gennai <francesco.gennai@isti.cnr.it>
+	Files:	examples/poptest3.c (+), Makefile, libspopc.h, objects.c
+	Msg:	added popchkmsg() to check the availability of a message.
+
+2009-01-05	me <brouits@free.fr>
+	Files:	objects.c, libspopc.h, format.c
+	Msg:	bugfix in popdelmsg(), poplast() and popnum().
+		renamed stat2last() into stat2num(), so, API break.
+		many thanks to Francesco Gennai pointing on that bug.
+
+2008-12-14	me <brouits@free.fr>
+	Files:	doc/manual.txt
+	Msg:	up-to-date manual.txt
+		removed other formats of the  manual (html, ...)
+
+2008-12-13	me <brouits@free.fr>
+	Files:	session.c, libspopc.h, libspopc.c (+), mutex.[ch] (+) Makefile
+	Msg:	added thread-safety support when compiled with _REENTRANT.
+		This adds libspopc_init() and libspopc_clean(). This needs
+		POSIX semaphores. version is now 0.9 (API break in some case)
+
+2008-12-12	me <brouits@free.fr>
+	Files:	session.c, libspopc.h, Makefile
+	Msg:	added pop3_ssl_auto(), pop3_ssl_always() and pop3_ssl_never().
+		This controls libspopc behaviour on using or not SSL on
+		connecting servers. version is now 0.8
+
+2008-05-09	Angus <angus@uducat.com>
+	Files:	queries.c
+	Msg:	fix on end-of-line detection in pop3_query()
+
+2008-05-09	me <brouits@free.fr>
+	Files:	*.c
+	Msg:	fixed broken old fix recv_rest(), removed all EBUG defs. v0.7.8
+
+2008-05-09	me <brouits@free.fr>
+	Files:	queries.c
+	Msg:	fixed broken dotline search in recv_rest()
+
+2008-05-06	me <brouits@free.fr>
+	Files:	queries.c
+	Msg:	better End Of String detection (break on overflow)
+
+2008-05-06	Angus <angus@uducat.com>
+	Files:	session.c
+	Msg:	use of herror()
+
+2008-04-10	Angus <angus@uducat.com>
+	Files:	query.c
+	Msg:	fixed regression on pop3_query() in buffer underflow.
+
+2008-03-27	Angus <angus@uducat.com>
+	Files:	session.c format.c
+	Msg:	fixed memory leaks in list2array
+
+2008-03-03	Gianluca Bove <gianluca.bove@gmail.com>
+	Files:	session.c
+	Msg:	fix memory leak in SSL part of pop3_disconnect
+
+2008-03-03	me <brouits@free.fr>
+	Files:	session.c
+	Msg:	replaced line 162's malloc by a NULL;
+			avoid a one byte memory leak..
+
+2008-02-28	Yann Fleutot <yann.fleutot@eads.com>
+	Files:	parsing.c, queries.c
+	Msg:	exact \r\n.\r\n end of message parsing.
+			fix some memory leaks on errors.
+
+2007-05-19	Bernard Hatt <bmh@arkady.demon.co.uk>
+	Files:	session.c
+	Msg:	remove buggy ';' in deep copy (infinite loop)
+			releasing libspopc-0.7.5
+
+2007-03-20	Normen Bolling <nb@enbee.de>
+	Files:	queries.c
+	Msg:	fixes double free on second realloc() call.
+			releasing libspopc-0.7.4
+
+2007-03-15	me	<brouits@free.fr>
+	Files:	session.c
+	Msg:	added shutdown(sock, SHUT_RDWR) in pop3_disconnect()
+			releasing libspopc-0.7.3
+
+2007-03-02	me <brouits@free.fr>
+	Files:	session.c
+	Msg:	deep copy struct hostent after gethostbyname()
+			so giving it almost thread safe (without SSL).
+
+2007-02-01	me <brouits@free.fr>
+	Files:	Makefile, objects.c session.c examples/poptest1.c
+	Msg:	fix install umask. removed gethostbyname_r. fix hostent
+			malloc/free in popsession object. redo blocking sockets.
+			FIXME: must deep copy struct hostent to be reentrant!
+				
+2006-04-05	me <brouits@free.fr>
+	Files:	nothing
+	Msg:	make tarball of 0.7.2 available with Jeff's timedread() 
+			patch because 0.7 doesn't work very well with pop3s.
+			Bugs reported by Tejas Kokje, having timeout reached
+			on pop.gmail.com
+				
+2006-02-25  Jeff Pohlmeyer <yetanothergeek@gmail.com>
+	Files:	queries.c session.c
+	Msg:	ssl fix:
+			- remove ssl_verify_cert_chain() since it is bound 
+			to the internal of openssl 0.9.7 and doesn't compile
+			on ms-windows. Thanks to bug report by 
+			Nathan Whitney <nathan.whitney@oakleynetworks.com>
+			- don't really use timedrread() if SSL is enabled
+			since it doesn't work correctly.
+				
+2006-02-09  me <brouits@free.fr>
+	Files:	Makefile doc/rfc/* Makefile 
+	Msg:	added all pop3 related internet RFCs.
+			better Makefile (uninstall) (debug)
+
+2006-01-31  me <brouits@free.fr>
+	Files:	format.c queries.c session.c libspopc.h
+	Msg:	#define POPBUF as 512 bytes, as say RFC 1939
+			and put it on every pop3 query.
+
+2006-01-12  me <brouits@free.fr>
+	Files:	format.c queries.c
+	Msg:	replace sprintf() by snprintf().
+
+2006-01-11  Jeff Pohlmeyer <yetanothergeek@gmail.com>
+	Files:	Makefile libspopc.h 
+			session.c format.c objects.c queries.c
+			examples/*
+	Msg:	Version 0.7
+			safer string operations in format.c
+			added SSL support
+			API changed : added struct pop3sock, 
+			sockets are now of this type
+			added pop3_cert_setup()
+
+2006-01-08  me <brouits@free.fr>
+	Files:	objects.c
+	Msg:	fixed a memory leak in poplast() pointed 
+			out by Siegfried Büchele.
+
+2005-03-28  me <brouits@free.fr>
+	Files:	libspopc.h objects.c 
+	Msg:	WARNING: Version 0.6 : API BROKEN
+			ABI broken : moved popnum() to a real function
+			SEMANTIC BROKEN ! popnum() 0.5.9 replaced by poplast()!
+			API BROKEN : added poplast() as a real function :
+			fixes an inconsistency between session->last and popnum()
+			pointed out by Alexander Yaworsky.
+
+2005-03-26  Alexander Yaworsky <yaworsky@migusoft.ru>
+	Files:	objects.c
+	Msg:	code factoring in label 'error'	allow port 
+			selection (host:port) in popbegin()
+
+2005-03-25  Alexander Yaworsky <yaworsky@migusoft.ru>
+	Files:	session.c
+	Msg:	add WSACleanup() for win32 at the end of pop3_disconnect()
+
+2004-08-17  Marcelo <jdacruz2002@yahoo.com.ar>
+	Files:	format.c
+	Msg:	skip ...\n before +OK in retr2msg()
+
+2003-08-25  me <brouits@free.fr>
+	Files:	examples/butcher.c Makefile
+	Msg:	added another example to use libspopc.
+
+2003-08-12  me <brouits@free.fr>
+	Files:	format.c
+	Msg:	fixed list2array() and uidl2array()
+			when mail deletion previously done.
+
+2003-07-25  me <brouits@free.fr>
+	Files:	format.c, queries.c, objects.c
+	Msg:	bugfix in popdelmsg(), code cleanup.
+			thx to Zoli <zoli@micks.hu> for the bug report.
+
+2003-06-06  me <brouits@free.fr>
+	Files:	session.c (add)
+	Msg:	added gethostbyname_r() if -D_REENTRANT
+			thx to <jack@atosc.org> for examples.
+
+2003-04-16  me <brouits@free.fr>
+	Files:	objects.c (fix)
+	Msg:	fix memory leaks in popdelmsg() and popcancel()
+
+2003-04-15  Siegfried Büchele <siegfried.buechele@pruftechnik-rv.com>
+	Files:	objects.c (fix)
+	Msg:	fix memory leak in popend()
+
+2003-04-15  me <brouits@free.fr>
+	Files:	format.c, libspopc.h[.html] (add)
+	Msg:	added freeuidlarray()
+			added freelistarray()
+			added freemsg()
+
+2003-04-08  James Marjie <jidatlah@sandyvalley.net>
+	Files:	Makefile (fix)
+	Msg:	better win32 support for Makefile
+
+2003-04-07  Thomas Klein <thomas.klein@lanterne.org>
+	Files:	parsing.c, queries.c, libspopc.h (fix)
+			format.c, libspopc.html (fix)
+	Msg:	new dotline() function.
+			Use of DOTLINE is totally deprecated.
+			Bugfix for some mails, and empty mailbox.
+
+2003-03-15  Martin Polak / me <brouits@free.fr>
+	Files:	objects.c (fix)
+	Msg:	refreshing stats and lists ins the session object
+			after a mail deletion.
+
+2003-02-25  Rong Zhang / me  <rongz@rrenterprises.on.ca>
+	Files:	objects.c (fix)
+	Msg:	avoid segfault in popend().
+			thx to Miod and Martin
+
+2003-02-19  Per Larsson <per.larsson@csfb.com>
+	Files:	queries.c (fix)
+	Msg:	fixing bug if exactly 512 chars are received.
+
+2003-02-18  Martin Polak <mpolak@gup.jku.at>
+	Files:	libspopc.h (fix) queries.c (fix) objects.c (fix)
+	Msg:	replace some 'char*' by 'const char*'
+			added #ifdef __cplusplus stuff.
+
+2003-02-02  me <brouits@free.fr>
+	Files:	queries.c (fix)
+			Makefile (add)
+	Msg:	fixed segfault when zero mail.
+			now, also make "uninstall" target
+
+2003-01-31  Thomas Klein <thomas.klein@lanterne.org>
+	Files:	queries.c (add) parsing.c (fix)
+	Msg:	Now, Socket are read with a SOCKET_TIMEOUT test
+			thx to the use of 'select'. Reallocation of
+			the 'recv' buffer is optimized . Also, doteline()
+			is faster.
+
+2002-12-23  anonymous from Taiwan <chc@openfind.com.tw>
+	Files:	parsing.c (fix)
+	Msg:	parsing.c:dotline() better buffer consistence checking.
+
+2002-12-01   me <brouits@free.fr>
+	Files:	INSTALL (new) README(fix) autogen.sh (new)
+	Msg:	use autogen.sh if you are using the CVS version
+			of libspopc. it will construct the configure
+			script.  Please help to add debug targets in
+			those generated Makefiles, since libspopc must
+			also be compiled with an EBUG #definition.
+			Currently, it is in old makefile.dev, and with
+			the 'yamd' tool. (read INSTALL please)
+			The configure script will always be present
+			only in the *public* releases of libspopc.
+
+2002-11-30   Kuba Gregorski <gregorsk@mccnet.pl>
+	Files:	Makefile.am (new) configure.ac (new)
+	Msg:	Now should help libspopc to be  able to be
+			build on different unices. The old Makefile
+			is moved as 'makefile.dev' for the old way
+			of compiling and debugging libspopc.
+			The new generated Makefile has currently no
+			'debug' nor 'test' targets. 
+
+2002-11-20   me <brouits@free.fr>
+	Files:	session.c (fix) 128 to 512 bytes limit
+			queries.c (fix) idem
+			format.c (fix) idem
+	Msg:	RFC 1939 said: "Responses may be up to 
+			512 characters long, including the 
+			terminating CRLF." cool :)
+
+2002-11-13   Kuba Gregorski <gregorsk@mccnet.pl>
+	Files:	format.c (fix) on *2array
+	Msg:	'courier imap 1.6.1 -1.7.2' +OK.*\n skip
+
+2002-09-12   David Ansart <ansartd@caramail.com>
+	Files:	format.c (fix(fix)) on *2array
+
+2002-09-10   David Ansart <ansartd@caramail.com>
+	Files:	format.c (fix)
+	Msg:	Better '+OK.*\n ' skip on uidl2array/list2array
+			for worldonline.fr pop server.
+
+2002-08-30   Jouni Kivilahti <kivilahti@exdecfinland.org>
+	Files:	session.c (fix) format.c (fix) query.c (fix) libspopc.h (fix)
+			Makefile (add)
+	Msg:	Replacing every occurence of bzero() / bcopy()
+			to POSIX calls, such as memset() / memmove()
+			added specific WIN32 parts to make it on win32.
+
+2002-07-08   me <brouits@free.fr>, Segfried Schnieders <siegie@gmx.de>
+	Files:	format.c (fix) query.c (fix) parsing.c (fix)
+			libspopc.h[.html] (fix) Makefile (add) README (fix) doc/README (new)
+	Msg:	Major bugfixes, new release : 0.4
+			quick fix to the <64B pop3_query() bug 
+			reported by Siegfried Schnieders. 
+			better comments, added 	FIXME and SUGGEST keywords.
+			fixed compil errors with -DEBUG
+			cleaned some awful parts of .h
+			add 'distclean' and 'debug' to Makefile
+			warn about mixing use of low and high API in README
+			some greetings in doc/README for both users and contribs
+
+2001-12-28   me <brouits@free.fr>
+	Files:	doc/ (new)
+			doc/* (new)
+			libspopc.h (add)
+			libspopc.h.html (add)
+			objects.c (add)
+	Msg:	add popcancel() and popdelmsg()
+			to high-level API. Add documentation in
+			AbiWord,text,StarOffice,Postscript,RichTextFormat
+			Kword and HTML formats.
+
+2001-12-27   me <brouits@free.fr>
+	Files:	COPYING.LIB (new)
+			test.c (rm)
+			examples/poptest1.c (new)
+			testobjects (rm)
+			examples/poptest2.c (new)
+			Makefile (add)
+			README (fix)
+	Msg:	no changes to API
+			generation of lib in Makefile
+			don't want to make a shared lib
+
+2001-12-24   me <brouits@free.fr>
+	Files:	objects.c (new)
+			objects.h (new)
+			objects.h.html (new)
+			testobjects.c (new)
+			dont_do_that.c (new)
+			parsing.c (fix)
+			queries.c (fix)
+			format.c (fix)
+			Makefile (add)
+			ChangeLog (new)
+	Msg:	Major bugfixes, new release: 0.2
+			added the object API
+			fixed bad uses of realloc()
+
+2001-12-23   me <brouits@free.fr>
+	Files:	queries.c (new)
+			parsing.c (new)
+			session.c (new)
+			format.c (new)
+			libspopc.h (new)
+			libspopc.h.html (new)
+			test.c (new)
+			Makefile (new)
+			install.sh (new)
+			README (new)
+	Msg:	First release: 0.1
+			fixed low-level API

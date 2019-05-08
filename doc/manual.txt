@@ -1,0 +1,340 @@
+libspopc manual
+
+Benoit Rouits <brouits@free.fr> 12/28/2001, 12/12/2008
+
+
+= Introduction =
+
+libspopc is a pop3 client library written in C and uses BSD-style sockets.
+It uses sort of blocking sockets, but with a 15s timeout on read and write.
+It is available on all Unices and MS-Windows NT/2000/XP with minor tweaks.
+It may also work on MS-Windows 95/98/ME with some tweaks (old versions worked)
+libspopc is free software, released under the GNU LGPLv2 License.
+It is available on http://herewe.servebeer.com/libspopc/index.html
+libspopc offers low-level and high-level methods to acces a pop3 server. To
+use low-level API, it is recommended to read RFC 1725 (see doc/rfc/). No
+special knowledge is required to use the high-level API.
+This manual tells how to use libspopc in both low-level and high-level methods.
+
+
+= Building libspopc =
+
+
+== on linux, *BSD (and other unices) ==
+
+
+=== using the Makefile ===
+
+The given Makefile allows to build libspopc in a simple way, on your terminal:
+
+	$ make
+	[...]
+	$ su -c "make install"
+		or
+	$ sudo make install
+
+For the full version of libspopc, you need:
+
+- GNU make (or old standard make, though not tested)
+- a c compiler                 (gcc only has been tested)
+- a libc                       (glibc and dietlibc have been tested)
+- a librt provided with libc   (for libspopc version >= 0.9)
+- openssl and libcrypto        (for SSL support)
+
+
+=== use dietlibc instead of the system's libc ===
+
+- install dietlibc and set the DIET macro to "diet" in the Makefile
+- remove -pedantic-errors in CFLAGS
+
+
+=== disable SSL support ===
+
+- remove -DUSE_SSL from CFLAGS in the Makefile
+- remove -lcrypto -lssl from LDFLAGS in the Makefile
+
+
+=== disable use of semaphores if you do not use threads ===
+
+- remove -D_REENTRANT from CFLAGS in the Makefile
+- remove -lrt from LDFLAGS in the Makefile
+
+
+== on MacOSX ==
+
+libspopc should build easily on MacOSX, using the developer tools (gnu make,
+gcc). Please tell me if you succeed to or not.
+
+
+== on MS-Windows 95/98/ME and NT/XP/2000/2003/Vista ==
+
+Libspopc builds successfuly on these flavours. The main trick is to import
+libspopc sources in you IDE and create an appropriate "project" for it.
+The archive contains a working project for the dev-cpp IDE (and Makefile.win
+that should work for MinGW. This porject/Makefile enables openssl, so you have
+to download openssl for win32 if you use them as is.
+You also need at last MSVCRT.DLL and WSOCK32.DLL.
+
+
+== on OpenVMS ==
+
+libspopc builds successfully on OpenVMS. Use the build_libspopc.com in the
+vms/ directory to build libspopc with or without SSL suuport. See how to use
+this script in the vms_readme.txt documentation file. Note that currently,
+the re-entrant code of libspopc is disabled for OpenVMS. If you have troubles
+building libspopc, you can install an older binary package provided by Quadratrix. See: http://www.quadratrix.be/opensource.html
+
+
+= Programming with libspopc =
+
+libspopc provides 2 levels of programmation. One of them allow you to know
+nothing about socket programming nor to have read entirely the POP3 RFC.
+The second one allow you to deal with sockets and low-level POP3 queries. In
+the latter case, you must have read rhe POP3 RFC and know a bit on network
+programming. Use the one you prefer, but DO NOT MIX USE OF THE 2 APIs.
+
+
+== The high-level API (the easy way) ==
+
+
+=== declarations ===
+To use libspopc, you have to include in your main program the libspopc header:
+
+	#include <libspopc.h>
+
+Then, in you main function, declare a popsession* object. You don't need to
+know what a popsession consists of, but if you are curious, see libspopc.h.
+
+	popsession* mysession;
+
+
+=== starting the pop session ===
+
+Since version 0.9, you must call libspopc_init() before starting to use libspopc routines.
+
+	libspopc_init(); /* version >= 0.9 */
+
+Now, to start a pop3 dialog with a pop3 server, use:
+
+	error = popbegin(char* servername, char* user, char* pass, popsession** &mysession);
+
+If no error occurs, popbegin returns a NULL pointer. Else, it returns an error
+message and the session is not initialized. When the session is initialized,
+popbegin will asks the pop3 server to give him knowledge of how many messages 
+are stored, and how many bytes, etc... You can know them by reading the popsession
+members with provided macros (see <libspopc.h>).
+
+
+=== dealing with the pop server ===
+
+Once the session has begun, you can directly ask what is the last mail id:
+
+	int last,total;
+	last = mysession->last;
+	total = mysession->num;
+
+In the begining of a pop3 session, last and total emails are the same.
+An email is accessable through its 'id' (from 1 to last).
+Hence, you can ask everything you want on messages:
+
+	for(i=1;i<=last;i++){
+		size=popmsgsize(mysession,i);
+	/* the size in bytes of message i */
+
+		sig=popmsguid(mysession,i);
+	/* the unique signature of message i */
+
+		head=popgethead(mysession,i);
+	/* the message header */
+
+		msg=popgetmsg(mysession,i);
+	/* the message itself */
+
+		popdelmsg(mysession,i);
+	/* deletes the message on server */
+	}
+
+You can perform automatic deletion after retrieving a message by asking it to
+the session:
+
+	popsetdel(mysession);
+
+or stop it by calling:
+
+	popsetundel(mysession);
+
+Be careful if you use threads, then: avoid using 2 threads on the same session.
+If you want to force cancelation of all previous deletions, ask before quit:
+
+	popcancel(mysession);
+
+Deconnection is then made by a call to:
+
+	popend(mysession);
+
+To start a new pop3 session, you will have to use popbegin(...) again.
+
+
+=== ending with libspopc routines ===
+
+Since version 0.9, you must call libspopc_clean() when you do not want to use
+anymore libspopc routines. For example, before your program exits, you will
+have to call the following routine:
+
+	libspopc_clean(); /* version >= 0.9 */
+
+There are several other methods to deal with the pop server, see the complete
+list in file libspopc.h in section "high-level methods".
+See also example poptest2.c in libspopc example sources.
+
+
+== The low-level API (the hacky way) ==
+
+The low-level API is *another way* to dilog with a pop3 server.
+If you choose to use this API, forget about the previous sections.
+
+
+=== declarations ===
+
+To use libspopc, you have to include in your main program the libspopc header:
+
+	#include <libspopc.h>
+
+Then, in your main function, you have to declare some network-oriented
+structures in order to use BSD sockets:
+
+	int mysocket;
+	struct hostent myserver;
+	struct sockaddr_in myconnection;
+
+and some specific libspopc types:
+
+	int* mylist;
+	char** myuidl;
+
+mylist will hold an array of sizes of any messages stored in the pop server.
+(int)mylist[0] is a special cell which holds the number of elements in the list.
+This list is indexed by the current session's message number.
+
+myuidl will hold an array of unique signatures of messages stored in the pop server.
+This list is indexed by the all-time messages ids. This allows you to
+keep track of which message you have already read in a previous pop3 session.
+(char*)myuidl[0] is a special cell which holds the number of signatures.
+You can get it with well known function atoi() declared in <stdlib.h>.
+
+
+=== connection ===
+
+Since version 0.9, you must call libspopc_init() before starting to use libspopc routines.
+
+	libspopc_init(); /* version >= 0.9 */
+
+Now, you can prepare a pop3 connection:
+
+	mysocket = pop3_prepare(myservername,0,&myconnection,&myserver);
+
+where myservername is a (char*) string holding the internet name of the pop3 server.
+pop3_prepare will return -1 if a problem occured.
+If no problem occured, you can connect to the pop3 server:
+
+	(char*)message = pop3_connect(mysock,&myconnection);
+
+if message is NULL, the connection failed. Else, check the server's response:
+
+	if(pop3_error(message)){
+		printf("%s",message);
+		pop3_disconnect(mysock);
+	}
+
+As you can see in this sample, a call to pop3_disconnect will disconnect from
+the server if connection failed, and free all data structures allocated by
+pop3_prepare and pop3connect.
+
+
+=== dealing with the pop server ===
+
+For a complete description of pop3 methods, see <libspopc.h> in section 'pop3 queries'.
+It is recommended to read RFC 1725 also, because of some 
+particularities of the pop3 protocol. Else, here are some tricks about them:
+
+
+==== statistics ====
+
+	char* data;
+	data = pop3_stat(mysock);
+	if(pop3_error(data)){
+		printf("%s",data);
+	}else{
+		printf("stat: %d mail(s)\n",stat2num(data));
+		printf("stat: %d bytes\n",stat2bytes(data));
+	}
+	free(data);
+
+
+==== listing ====
+
+	int* mylist
+	data = pop3_list(mysock,0); /* 0 means all messages */
+	if(pop3_error(data)){
+		printf("%s",data);
+	}else{
+		mylist=list2array(data);
+	}
+	free(data);
+	for(i=1;i<=mylist[0];i++){
+		printf("msg %d is of %d bytes\n",i,mylist[i]);
+	}
+	free(mylist);
+
+
+==== retrieving ====
+
+	char* mymessage;
+	data = pop3_retr(mysock,i);
+	if(pop3_error(data)){
+		printf("%s",data);
+	}else{
+		mymessage=retr2msg(data);
+		printf("message %d:\n%s",i,mymessage);
+		free(mymessage);
+	}
+	free(data);
+
+
+==== disconnecting ====
+
+	data = pop3_quit(mysock);
+	printf("server says:%s",data);
+	pop3_disconnect(mysock);
+
+
+=== ending with libspopc routines ===
+
+Since version 0.9, you must call libspopc_clean() when you do not want to use
+anymore libspopc routines. For example, before your program exits, you will
+have to call the following routine:
+
+	libspopc_clean(); /* version >= 0.9 */
+
+There are several other pop3 queries that you can see in <libspopc.h> and
+explained in RFC1725. For an example, see examples/poptest1.c in libspopc 
+example sources.
+
+
+== Download, Contribute... ==
+
+
+=== Download ===
+libspopc is always available at 
+	http://herewe.servebeer.com/libspopc/index.html
+
+The SVN development tree is freely accessible in read-only anonymous mode.
+
+feedback, patches, questions and bug report can be sent to <brouits@free.fr>
+
+
+== Authors ==
+- Original and main author: Benoît Rouits <brouits@free.fr>
+- Main contributors: see AUTHORS file in the libspopc sources.
+- Contributions: see ChangeLog file in the libspopc sources.
+

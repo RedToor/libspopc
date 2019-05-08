@@ -1,0 +1,52 @@
+# Project: libspopc
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = format.o libspopc.o mutex.o objects.o parsing.o queries.o session.o $(RES)
+LINKOBJ  = format.o libspopc.o mutex.o objects.o parsing.o queries.o session.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" --no-export-all-symbols --add-stdcall-alias C:/Dev-Cpp/lib/libwsock32.a C:/OpenSSL/lib/MinGW/libeay32.a C:/OpenSSL/lib/MinGW/ssleay32.a  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = libspopc.dll
+CXXFLAGS = $(CXXINCS) -DBUILDING_DLL=1  
+CFLAGS = $(INCS) -DBUILDING_DLL=1 -DUSE_SSL -I C:\OpenSSL\include  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before libspopc.dll all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+DLLWRAP=dllwrap.exe
+DEFFILE=liblibspopc.def
+STATICLIB=liblibspopc.a
+
+$(BIN): $(LINKOBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)
+
+format.o: format.c
+	$(CC) -c format.c -o format.o $(CFLAGS)
+
+libspopc.o: libspopc.c
+	$(CC) -c libspopc.c -o libspopc.o $(CFLAGS)
+
+mutex.o: mutex.c
+	$(CC) -c mutex.c -o mutex.o $(CFLAGS)
+
+objects.o: objects.c
+	$(CC) -c objects.c -o objects.o $(CFLAGS)
+
+parsing.o: parsing.c
+	$(CC) -c parsing.c -o parsing.o $(CFLAGS)
+
+queries.o: queries.c
+	$(CC) -c queries.c -o queries.o $(CFLAGS)
+
+session.o: session.c
+	$(CC) -c session.c -o session.o $(CFLAGS)

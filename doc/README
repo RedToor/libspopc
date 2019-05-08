@@ -1,0 +1,27 @@
+Hello,
+This documentation is made to help you to quick begin your pop3 module of your 
+own program. If you would like a better doc, please ask me, don't hesitate to
+suggest me improvements of it, or patch it (.txt) or even giving brand new
+docs from you to <brouits@free.fr>.
+Have fun!
+
+libspopc/AUTHORS :	authors name
+libspopc/ChangeLog :	when who did what (keeping track of libspopc evolution)
+libspopc/COPYING.LIB :	the Licence applied to libspopc
+libspopc/doc/* :	how to use libspopc (quick start) and this README
+libspopc/doc/rfc/* :	the internet RFC and standards for the POP3 protocol
+libspopc/examples/* :	examples to test libspopc on your computer
+
+-- ben
+
+P.S: if you want to contribute to the C part developpement of libspopc and want
+some docs about it, read first the low-level API in libspopc.h and look:
+
+libspopc/format.c   :	functions to format pop data returned by server
+libspopc/objects.c  :	high-level structs&funcs for the libspopc user
+libspopc/parsing.c  :	small line parsing function for internal use
+libspopc/queries.c  :	low-level (internal) methods of libspopc
+libspopc/session.c  :	socket-layer session handlers
+libspopc/libspopc.c :	initialization routines...
+libspopc/mutex.c    :	mutex routines (used in session.c, e.g.)
+

@@ -1,0 +1,39 @@
+Hello,
+
+libspopc is a thin pop3 client library written in C.
+It internally uses sort of blocking sockets (15s timeout).
+It exports a high-level API that does not expose
+the socket to you, unless you want to use the
+low-level API (but don't use both! they may conflict).
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details (COPYING.LIB).
+
+- if you are under windows, import the files into you IDE,
+and compile with the wsock32 library as linker options
+the archive contains a functionnal dev-cpp project file.
+You have to download openssl for win32 for SSL connections.
+
+- if you want to disable SSL support, compile without
+the #define USE_SSL and without -lcrypto -lssl in LDFLAGS
+(see CFLAGS and LDFLAGS in Makefile)
+
+- if you want to disable thread-safety, compile without
+the #define _REENTRANT and without -lrt in LDFLAGS
+(see CFLAGS and LDFLAGS in Makefile)
+
+- manuals are in doc/ directory
+
+- under Unices, type "make install" to install libspopc.a
+and libsopoc.so in /usr/lib/ plus libspopc.h in /usr/include
+(you must be root to do that)
+
+To link your program with libspopc, just add
+#include <libspopc.h> before your main function
+and compile as:
+cc -o program program.c -lspopc
+
+enjoy ! questions/patches ? mail me <brouits@free.fr>
+
